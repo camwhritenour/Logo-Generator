@@ -8,8 +8,13 @@ async function prompt() {
     const answers = await inquirer.prompt([
         {
             type: 'input',
-            name: 'color',
-            message: 'Name a color you would like the main shape to be.'
+            name: 'text',
+            message: 'Enter 3 characters for the logo.'
+        },
+        {
+            type: 'input',
+            name: 'textcolor',
+            message: 'Name a color you would like the text to be.'
         },
         {
             type: 'list',
@@ -19,8 +24,8 @@ async function prompt() {
         },
         {
             type: 'input',
-            name: 'text',
-            message: 'Enter 3 characters for the logo.'
+            name: 'shapecolor',
+            message: 'Name a color you would like the shape to be.'
         }
     ]);
 
