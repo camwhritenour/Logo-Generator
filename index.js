@@ -1,66 +1,60 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
+const { writeFile } = require('fs/promises');
+const shapes = require('./lib/shapes.js')
 
-
-//Function to promt user for logo information
-
-async function prompt() {
-    const answers = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'text',
-            message: 'Enter 3 characters for the logo.'
-        },
-        {
-            type: 'input',
-            name: 'textcolor',
-            message: 'Name a color you would like the text to be.'
-        },
-        {
-            type: 'list',
-            name: 'shape',
-            message: 'Select a shape.',
-            choices: ['circle', 'triangle', 'square']
-        },
-        {
-            type: 'input',
-            name: 'shapecolor',
-            message: 'Name a color you would like the shape to be.'
-        }
-    ]);
-
-    return answers;
-}
-
-// Function to save generated SVG to a file
-function saveLogoToFile(logo, filename) {
-    fs.writeFileSync(filename, logo, 'utf-8');
-    console.log(`Logo saved to ${filename}.svg`)
-}
 
 // Main function
+
 async function main() {
-    console.log('Welcome to the Logo Generator');
+  console.log('Welcome to the Logo Generator');
 
-    // Prompt user for logo details
-    const logoDetails = await promptUser();
+  // Prompts User for Logo Information.
 
-    // Call function to generate the logo SVG
-    const generatedLogo = createLogo = createLogo(logoDetails);
-
-    // Prompt user for file name
-    const {filename} = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'fileName',
-            message: 'Enter the filename:'
+  const answers = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'text',
+      message: 'Enter 3 characters for the logo.',
+      validate: (input) => {
+        if (input.length <= 3) {
+          return true;
         }
-    ]);
+        return 'Please enter up to three characters.';
+      },
+    },
+    {
+      type: 'input',
+      name: 'textColor',
+      message: 'Enter a color you would like the text to be.'
+    },
+    {
+      type: 'list',
+      name: 'shape',
+      message: 'Select a shape:',
+      choices: ['Triangle', 'Circle', 'Square'],
+    },
+    {
+      type: 'input',
+      name: 'shapeColor',
+      message: 'Enter a color you would like the shape to be.'
+    }
+  ]);
 
-    // Save the logo to a file
-    saveLogoToFile(generatedLogo, filename);
+  const shape = new shapes[answers.shape](answers.shapeColor);
 
-}
+  const logo = `
+<svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+
+  ${shape.render()}
+
+  <text x="150" y="125" font-size="60" text-anchor="middle" fill="${answers.textColor}">${answers.text}</text>
+
+</svg>
+    `;
+  // Function to save generated SVG to a file
+  await writeFile("./examples/logo.svg", logo)
+  console.log("New logo has been successfully created at Logo-Generator/examples/logo.svg")
+};
 
 // Run main function
 main()
