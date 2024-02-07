@@ -39,9 +39,9 @@ async function main() {
       message: 'Enter a color you would like the shape to be.'
     }
   ]);
-
+// Passes through the information from inquirer to the classes
   const shape = new shapes[answers.shape](answers.shapeColor);
-
+// The blueprint for the file that is generated.
   const logo = `
 <svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
 
